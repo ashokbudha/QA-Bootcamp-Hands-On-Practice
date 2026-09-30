@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Test Documentation</title>
+<style>
+:root {
+  --bg:#0d0f10; --panel:#121516; --panel2:#171a1b; --border:#292e30;
+  --text:#eef2f3; --muted:#a7b0b3; --green:#20c77a; --green2:#123b27;
+  --orange:#ff6c37; --blue:#5b9cff; --purple:#a77cff; --red:#ff5c6c;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6}
+a{color:inherit;text-decoration:none}
+.app{display:flex;min-height:100vh}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:300px;background:#0b0d0e;border-right:1px solid var(--border);overflow:auto;padding:24px 12px 30px}
+.brand{font-size:15px;font-weight:800;padding:0 10px 22px;color:#fff}
+.brand span{color:var(--green)}
+.side-section{margin-bottom:14px}
+.side-main{display:block;font-weight:800;font-size:14px;padding:8px 10px;border-radius:7px;color:#f1f4f5}
+.side-main:hover,.side-folder:hover,.side-request:hover{background:#171b1c}
+.side-folder{display:block;font-size:13px;color:#c8d0d2;padding:8px 10px 6px 20px;margin-top:2px}
+.side-request{display:flex;align-items:center;gap:8px;font-size:12px;color:#aeb7b9;padding:6px 10px 6px 26px;border-left:2px solid transparent}
+.side-request:hover{border-left-color:var(--green);color:#fff}
+.mini-method{font-size:9px;font-weight:800;width:30px;text-align:center;padding:2px 3px;border-radius:4px;background:#163522;color:#41d992}
+.side-request.post .mini-method{background:#3d271c;color:#ff9a70}
+.side-request.put .mini-method{background:#3d2e16;color:#ffc65c}
+.side-request.patch .mini-method{background:#29204a;color:#b89cff}
+.side-request.delete .mini-method{background:#401d23;color:#ff7e8c}
+.main{margin-left:300px;width:calc(100% - 300px);min-width:0}
+.topbar{position:sticky;top:0;z-index:5;height:64px;background:rgba(13,15,16,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 38px}
+.crumb{font-size:13px;color:var(--muted)} .crumb strong{color:var(--green)}
+.toolbar{display:flex;gap:8px}
+.toolbar button{background:#171a1b;border:1px solid var(--border);color:#dce2e3;padding:8px 12px;border-radius:7px;cursor:pointer}
+.toolbar button:hover{border-color:#4a5356}
+.container{max-width:1080px;margin:0 auto;padding:55px 52px 100px}
+.hero{padding-bottom:35px;border-bottom:1px solid var(--border);margin-bottom:40px}
+.hero h1{font-size:46px;line-height:1.1;margin:0 0 14px;letter-spacing:-1.5px}
+.hero p{color:var(--muted);max-width:800px;font-size:16px}
+.collection{margin-bottom:80px;scroll-margin-top:85px}
+.collection h2{font-size:30px;margin:0 0 12px;letter-spacing:-.5px}
+.collection h2:before{content:"";display:inline-block;width:5px;height:28px;background:var(--green);border-radius:4px;margin-right:12px;vertical-align:-3px}
+.folder{margin:35px 0 48px;padding-left:8px}
+.folder h3{font-size:21px;margin:0 0 18px;color:#f4f7f7}
+.intro{color:#c0c8ca}
+.request{background:var(--panel);border:1px solid var(--border);border-radius:12px;margin:18px 0;padding:0;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.15);scroll-margin-top:85px}
+.request-title{padding:18px 20px;font-size:17px;font-weight:750;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.method{font-size:11px;font-weight:900;letter-spacing:.5px;padding:4px 8px;border-radius:5px;background:#123d27;color:#35d98b}
+.method.post{background:#41251a;color:#ff9a70} .method.put{background:#493a16;color:#ffc85d}
+.method.patch{background:#2b2050;color:#bca1ff} .method.delete{background:#421d25;color:#ff7f8d}
+.endpoint{margin:0 20px;padding:16px 0;border-bottom:1px solid var(--border);font-size:13px;display:flex;gap:12px;align-items:flex-start;word-break:break-word}
+.endpoint span{font-weight:800;color:var(--green);font-size:11px;padding-top:2px}
+.endpoint code{color:#dfe6e7}
+.request>p{padding:0 20px;margin:18px 0;color:#c7ced0}
+.expected{margin:0 20px 18px;padding:14px 16px;border-left:3px solid var(--green);background:#101d16;color:#cfd7d8;border-radius:4px}
+.expected strong{color:#fff}
+.subblock{margin:0 20px 20px}
+.label{font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:#8f9a9d;font-weight:800;margin-bottom:8px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border:1px solid var(--border);padding:9px 11px;text-align:left}
+th{background:#181c1d;color:#dfe5e6;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+td{color:#c4ccce}
+code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:.92em;color:#dbe4e5}
+pre{margin:0;background:#0a0c0d;border:1px solid #252a2c;border-radius:8px;padding:16px;overflow:auto;color:#dce6e7}
+pre code{font-size:13px}
+.search{width:220px;background:#141819;border:1px solid var(--border);color:#fff;padding:8px 12px;border-radius:7px;outline:none}
+.search:focus{border-color:#536064}
+.empty{display:none}
+.footer{border-top:1px solid var(--border);padding:25px;color:#7f898c;font-size:12px;text-align:center}
+@media(max-width:900px){
+.sidebar{position:relative;width:100%;height:auto;max-height:45vh;border-right:0;border-bottom:1px solid var(--border)}
+.main{margin-left:0;width:100%} .app{display:block}
+.topbar{position:relative} .container{padding:35px 22px 70px} .search{width:150px}
+.hero h1{font-size:36px}
+}
+
+.side-section { position: relative; }
+.side-main { padding-right: 38px; }
+.collapse-toggle {
+  position: absolute;
+  right: 7px;
+  top: 5px;
+  width: 27px;
+  height: 27px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #9aa5a8;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 27px;
+  text-align: center;
+  z-index: 2;
+}
+.collapse-toggle:hover {
+  background: #202526;
+  color: #ffffff;
+}
+.side-section.collapsed > .side-folder,
+.side-section.collapsed > .side-request {
+  display: none;
+}
+.side-section.collapsed .collapse-toggle {
+  transform: rotate(-90deg);
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><span>●</span> API Test Documentation</div>
+  <div class="side-section"><a class="side-main" href="#reqres-crud">4.1 Reqres CRUD</a><a class="side-request get" href="#req-1-get-get-users"><span class="mini-method">GET</span>Get users</a><a class="side-request get" href="#req-2-get-get-user-by-id-2"><span class="mini-method">GET</span>Get User by Id 2</a><a class="side-request post" href="#req-3-post-create-user"><span class="mini-method">POST</span>create User</a><a class="side-request get" href="#req-4-get-get-non-existent-user"><span class="mini-method">GET</span>Get Non-Existent User</a><a class="side-request patch" href="#req-5-patch-partial-update-user"><span class="mini-method">PATCH</span>Partial update user</a><a class="side-request put" href="#req-6-put-update-user"><span class="mini-method">PUT</span>update user</a><a class="side-request delete" href="#req-7-delete-delete-user"><span class="mini-method">DELETE</span>delete user</a><a class="side-request get" href="#req-8-get-get-user-9"><span class="mini-method">GET</span>Get User 9</a><a class="side-request get" href="#req-9-get-get-user-1"><span class="mini-method">GET</span>Get user 1</a><a class="side-request get" href="#req-10-get-get-users-page-2"><span class="mini-method">GET</span>Get users Page 2</a><a class="side-request get" href="#req-11-get-get-users-page-3"><span class="mini-method">GET</span>get users page 3</a></div><div class="side-section"><a class="side-main" href="#authentication">4.2 Authentication</a><a class="side-folder" href="#authentication-1">Reqres Registration</a><a class="side-request post" href="#req-12-post-valid-registration"><span class="mini-method">POST</span>Valid registration</a><a class="side-request post" href="#req-13-post-missing-password"><span class="mini-method">POST</span>missing password</a><a class="side-request post" href="#req-14-post-invalid-email-format"><span class="mini-method">POST</span>Invalid email format</a><a class="side-folder" href="#authentication-2">Reqres Login</a><a class="side-request post" href="#req-15-post-valid-login"><span class="mini-method">POST</span>Valid Login</a><a class="side-request post" href="#req-16-post-wrong-password-login"><span class="mini-method">POST</span>wrong password login</a><a class="side-request post" href="#req-17-post-non-existent-user"><span class="mini-method">POST</span>Non Existent User</a><a class="side-folder" href="#authentication-3">Petstore Api key Authentication</a><a class="side-request get" href="#req-18-get-get-pet-without-api-key"><span class="mini-method">GET</span>Get pet without api key</a><a class="side-request get" href="#req-19-get-get-pet-with-api-key"><span class="mini-method">GET</span>Get pet with api key</a><a class="side-request post" href="#req-20-post-create-pet"><span class="mini-method">POST</span>create pet</a></div><div class="side-section"><a class="side-main" href="#request-chaining">4.3 Request Chaining & Variables</a><a class="side-folder" href="#request-chaining-1">User Workflow</a><a class="side-request post" href="#req-21-post-register"><span class="mini-method">POST</span>register</a><a class="side-request post" href="#req-22-post-create-user"><span class="mini-method">POST</span>create user</a><a class="side-folder" href="#request-chaining-2">Ecommerce Workflow</a><a class="side-request get" href="#req-23-get-get-user"><span class="mini-method">GET</span>Get user</a><a class="side-request get" href="#req-24-get-get-users-post"><span class="mini-method">GET</span>get users post</a><a class="side-request get" href="#req-25-get-get-comment"><span class="mini-method">GET</span>get comment</a><a class="side-request post" href="#req-26-post-add-comments"><span class="mini-method">POST</span>add comments</a><a class="side-request get" href="#req-27-get-verify-comment"><span class="mini-method">GET</span>verify comment</a></div><div class="side-section"><a class="side-main" href="#data-driven">4.4 Data driven testing</a><a class="side-request post" href="#req-28-post-create-user-data-driven"><span class="mini-method">POST</span>create user - data driven</a></div><div class="side-section"><a class="side-main" href="#weather">Weather API</a><a class="side-request get" href="#req-29-get-get-weather-by-city"><span class="mini-method">GET</span>get weather by city</a><a class="side-request get" href="#req-30-get-get-weather-by-lat-long"><span class="mini-method">GET</span>get weather by lat&amp;long</a><a class="side-request get" href="#req-31-get-test-with-invalid-api-key"><span class="mini-method">GET</span>test with invalid api key</a><a class="side-request get" href="#req-32-get-invalid-city-name"><span class="mini-method">GET</span>invalid city name</a></div><div class="side-section"><a class="side-main" href="#countries">Countries API</a><a class="side-request get" href="#req-33-get-search-country-by-name"><span class="mini-method">GET</span>search country by name</a><a class="side-request get" href="#req-34-get-search-by-country-code"><span class="mini-method">GET</span>search by country code</a><a class="side-request get" href="#req-35-get-filter-by-region"><span class="mini-method">GET</span>filter by region</a><a class="side-request get" href="#req-36-get-search-by-partial-name"><span class="mini-method">GET</span>search by partial name</a><a class="side-request get" href="#req-37-get-invalid-country"><span class="mini-method">GET</span>invalid country</a></div><div class="side-section"><a class="side-main" href="#petstore">Petstore API</a><a class="side-request get" href="#req-38-get-browse-available-pet"><span class="mini-method">GET</span>browse available pet</a><a class="side-request get" href="#req-39-get-get-pet-by-id"><span class="mini-method">GET</span>get pet by id</a><a class="side-request post" href="#req-40-post-place-order-for-pet"><span class="mini-method">POST</span>place order for pet</a><a class="side-request get" href="#req-41-get-check-order-status"><span class="mini-method">GET</span>check order status</a><a class="side-request delete" href="#req-42-delete-cancel-order"><span class="mini-method">DELETE</span>cancel order</a></div>
+</aside>
+<main class="main">
+  <div class="topbar">
+    <div class="crumb"><strong>API Test Documentation</strong> &nbsp;›&nbsp; Complete Collection</div>
+    <div class="toolbar">
+      <input class="search" id="search" placeholder="Search requests..." oninput="filterDocs()">
+      <button onclick="window.print()">Print / PDF</button>
+    </div>
+  </div>
+  <div class="container">
+    <div class="hero">
+      <h1>API Test Documentation</h1>
+      <p>Postman API testing documentation covering Reqres CRUD, authentication, request chaining and variables, data-driven testing, Weather API, Countries API, and Petstore API.</p>
+    </div>
+    <section id="reqres-crud" class="collection"><h2>4.1 Reqres CRUD</h2><p class="intro">This folder covers CRUD (Create, Read, Update, Delete) operations against the Reqres REST API. It serves as a practical exercise in testing standard HTTP methods and validating API responses across a variety of scenarios.</p>
+<article class="request" id="req-1-get-get-users">
+  <div class="request-title"><span class="method get">GET</span> <span>Get users</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{reqres_url}}/users</code></div>
+  <p>Retrieves a list of users from the Reqres API.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 200. The response should contain a data array containing user records.</div>
+  
+  
+</article>
+<article class="request" id="req-2-get-get-user-by-id-2">
+  <div class="request-title"><span class="method get">GET</span> <span>Get User by Id 2</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{reqres_url}}/users/2</code></div>
+  <p>Retrieves the details of the user with ID 2.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 200. The response should contain user data for the requested user.</div>
+  
+  
+</article>
+<article class="request" id="req-3-post-create-user">
+  <div class="request-title"><span class="method post">POST</span> <span>create User</span></div>
+  <div class="endpoint"><span>POST</span> <code>{{reqres_url}}/users</code></div>
+  <p>Creates a new user with the provided user details.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 201. The response should contain the created user&#x27;s ID.</div>
+  
+  <div class="subblock"><div class="label">Body — raw JSON</div><pre><code>{
+    &quot;name&quot;: &quot;Ashok&quot;,
+    &quot;job&quot;: &quot;QA Intern&quot;
+}</code></pre></div>
+</article>
+<article class="request" id="req-4-get-get-non-existent-user">
+  <div class="request-title"><span class="method get">GET</span> <span>Get Non-Existent User</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{reqres_url}}/users/999</code></div>
+  <p>Attempts to retrieve a user with an ID that does not exist.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 404 indicating that the requested user was not found.</div>
+  
+  
+</article>
+<article class="request" id="req-5-patch-partial-update-user">
+  <div class="request-title"><span class="method patch">PATCH</span> <span>Partial update user</span></div>
+  <div class="endpoint"><span>PATCH</span> <code>{{reqres_url}}/users/2</code></div>
+  <p>Partially updates the details of the user with ID 2.</p>
+  <div class="expected"><strong>Expected Response</strong><br>The response should indicate that the update was successful and return the updated information.</div>
+  
+  <div class="subblock"><div class="label">Body — raw JSON</div><pre><code>{
+    &quot;job&quot;: &quot;Senior QA&quot;
+}</code></pre></div>
+</article>
+<article class="request" id="req-6-put-update-user">
+  <div class="request-title"><span class="method put">PUT</span> <span>update user</span></div>
+  <div class="endpoint"><span>PUT</span> <code>{{reqres_url}}/users/2</code></div>
+  <p>Updates the details of the user with ID 2.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 200. The response should contain the updated user information and an updatedAt timestamp.</div>
+  
+  <div class="subblock"><div class="label">Body — raw JSON</div><pre><code>{
+  &quot;job&quot;: &quot;Senior QA&quot;
+}</code></pre></div>
+</article>
+<article class="request" id="req-7-delete-delete-user">
+  <div class="request-title"><span class="method delete">DELETE</span> <span>delete user</span></div>
+  <div class="endpoint"><span>DELETE</span> <code>{{reqres_url}}/users/2</code></div>
+  <p>Deletes the user with ID 2.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 204 indicating that the user was successfully deleted.</div>
+  
+  
+</article>
+<article class="request" id="req-8-get-get-user-9">
+  <div class="request-title"><span class="method get">GET</span> <span>Get User 9</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{reqres_url}}/users/9</code></div>
+  
+  
+  
+  
+</article>
+<article class="request" id="req-9-get-get-user-1">
+  <div class="request-title"><span class="method get">GET</span> <span>Get user 1</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{reqres_url}}/users/1</code></div>
+  
+  
+  
+  
+</article>
+<article class="request" id="req-10-get-get-users-page-2">
+  <div class="request-title"><span class="method get">GET</span> <span>Get users Page 2</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{reqres_url}}/users?page=2</code></div>
+  
+  
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>page</code></td><td><code>2</code></td></tr></tbody></table></div>
+  
+</article>
+<article class="request" id="req-11-get-get-users-page-3">
+  <div class="request-title"><span class="method get">GET</span> <span>get users page 3</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{reqres_url}}/users?page=3</code></div>
+  
+  
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>page</code></td><td><code>3</code></td></tr></tbody></table></div>
+  
+</article></section><section id="authentication" class="collection"><h2>4.2 Authentication</h2><p class="intro">This folder covers authentication and authorization testing across two APIs.</p><div id="authentication-1" class="folder"><h3>Reqres Registration</h3>
+<article class="request" id="req-12-post-valid-registration">
+  <div class="request-title"><span class="method post">POST</span> <span>Valid registration</span></div>
+  <div class="endpoint"><span>POST</span> <code>{{reqres_url}}/register</code></div>
+  <p>Registers a user using valid registration credentials.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Successful registration with a token returned in the response.</div>
+  
+  <div class="subblock"><div class="label">Body — raw JSON</div><pre><code>{
+    &quot;email&quot;: &quot;eve.holt@reqres.in&quot;,
+    &quot;password&quot;:&quot;pistol&quot;
+}</code></pre></div>
+</article>
+<article class="request" id="req-13-post-missing-password">
+  <div class="request-title"><span class="method post">POST</span> <span>missing password</span></div>
+  <div class="endpoint"><span>POST</span> <code>{{reqres_url}}/register</code></div>
+  <p>Attempts to register a user without providing a password.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 400 indicating a registration error.</div>
+  
+  <div class="subblock"><div class="label">Body — raw JSON</div><pre><code>{
+    &quot;email&quot;: &quot;eve.holt@reqres.in&quot;
+}</code></pre></div>
+</article>
+<article class="request" id="req-14-post-invalid-email-format">
+  <div class="request-title"><span class="method post">POST</span> <span>Invalid email format</span></div>
+  <div class="endpoint"><span>POST</span> <code>{{reqres_url}}/register</code></div>
+  <p>Attempts to register a user using an invalid email format.</p>
+  <div class="expected"><strong>Expected Response</strong><br>The API should reject the invalid registration request with an appropriate error response.</div>
+  
+  <div class="subblock"><div class="label">Body — raw JSON</div><pre><code>{
+    &quot;email&quot;: &quot;invalid-email&quot;,
+    &quot;password&quot;:&quot;pistol&quot;
+}</code></pre></div>
+</article></div><div id="authentication-2" class="folder"><h3>Reqres Login</h3>
+<article class="request" id="req-15-post-valid-login">
+  <div class="request-title"><span class="method post">POST</span> <span>Valid Login</span></div>
+  <div class="endpoint"><span>POST</span> <code>{{reqres_url}}/login</code></div>
+  <p>Logs in using valid user credentials.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Successful login with a token returned in the response.</div>
+  
+  <div class="subblock"><div class="label">Body — raw JSON</div><pre><code>{
+    &quot;email&quot;: &quot;eve.holt@reqres.in&quot;,
+    &quot;password&quot;: &quot;cityslicka&quot;
+}</code></pre></div>
+</article>
+<article class="request" id="req-16-post-wrong-password-login">
+  <div class="request-title"><span class="method post">POST</span> <span>wrong password login</span></div>
+  <div class="endpoint"><span>POST</span> <code>{{reqres_url}}/login</code></div>
+  <p>Attempts to log in using an incorrect password.</p>
+  <div class="expected"><strong>Expected Response</strong><br>The API should reject the login request and return an appropriate authentication error.</div>
+  
+  <div class="subblock"><div class="label">Body — raw JSON</div><pre><code>{
+    &quot;email&quot;: &quot;eve.holt@reqres.in&quot;,
+    &quot;password&quot;:&quot;wrong password&quot;
+}</code></pre></div>
+</article>
+<article class="request" id="req-17-post-non-existent-user">
+  <div class="request-title"><span class="method post">POST</span> <span>Non Existent User</span></div>
+  <div class="endpoint"><span>POST</span> <code>{{reqres_url}}/login</code></div>
+  <p>Attempts to log in using credentials for a user that does not exist.</p>
+  <div class="expected"><strong>Expected Response</strong><br>The API should reject the login request and return an appropriate authentication error.</div>
+  
+  <div class="subblock"><div class="label">Body — raw JSON</div><pre><code>{
+    &quot;email&quot;: &quot;ashok@gmail.com&quot;,
+    &quot;password&quot;: &quot;ashokbudha&quot;
+}</code></pre></div>
+</article></div><div id="authentication-3" class="folder"><h3>Petstore Api key Authentication</h3>
+<article class="request" id="req-18-get-get-pet-without-api-key">
+  <div class="request-title"><span class="method get">GET</span> <span>Get pet without api key</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{petstore_url}}/pet/findByStatus?status=available</code></div>
+  <p>Retrieves available pets without providing an API key in the request.</p>
+  <div class="expected"><strong>Expected Response</strong><br>The API should return a response showing whether authentication is required for this endpoint.</div>
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>status</code></td><td><code>available</code></td></tr></tbody></table></div>
+  
+</article>
+<article class="request" id="req-19-get-get-pet-with-api-key">
+  <div class="request-title"><span class="method get">GET</span> <span>Get pet with api key</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{petstore_url}}/pet/findByStatus?status=available</code></div>
+  <p>Retrieves available pets with an API key included in the request header.</p>
+  <div class="expected"><strong>Expected Response</strong><br>The API should process the request according to the provided API key and return the available pet information if authentication is accepted.</div>
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>status</code></td><td><code>available</code></td></tr></tbody></table></div>
+  
+</article>
+<article class="request" id="req-20-post-create-pet">
+  <div class="request-title"><span class="method post">POST</span> <span>create pet</span></div>
+  <div class="endpoint"><span>POST</span> <code>{{petstore_url}}/pet</code></div>
+  <p>Creates a new pet using the provided pet details. This request requires authentication.</p>
+  <div class="expected"><strong>Expected Response</strong><br>The API should process the request when valid authentication is provided and return the result of the pet creation operation.</div>
+  
+  <div class="subblock"><div class="label">Body — raw JSON</div><pre><code>{
+    &quot;name&quot;: &quot;lucy&quot;
+}</code></pre></div>
+</article></div></section><section id="request-chaining" class="collection"><h2>4.3 Request Chaining & Variables</h2><div id="request-chaining-1" class="folder"><h3>User Workflow</h3>
+<article class="request" id="req-21-post-register">
+  <div class="request-title"><span class="method post">POST</span> <span>register</span></div>
+  <div class="endpoint"><span>POST</span> <code>{{reqres_url}}/register</code></div>
+  <p>Registers a user with the provided credentials and returns an authentication token.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Successful registration with a token returned in the response. The returned token should be saved to the auth_token environment variable for use in subsequent requests.</div>
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>x-api-key</code></td><td><code>{{reqres_api}}</code></td></tr></tbody></table></div>
+  <div class="subblock"><div class="label">Body — raw JSON</div><pre><code>{
+    &quot;email&quot;: &quot;eve.holt@reqres.in&quot;,
+    &quot;password&quot;:&quot;pistol&quot;
+}</code></pre></div>
+</article>
+<article class="request" id="req-22-post-create-user">
+  <div class="request-title"><span class="method post">POST</span> <span>create user</span></div>
+  <div class="endpoint"><span>POST</span> <code>{{reqres_url}}/users</code></div>
+  <p>Creates a new user using the provided name and job details. The request uses the authentication token stored in {{auth_token}} and the API key stored in {{reqres_api}}. The returned user ID is saved to the created_user_id environment variable for use in the next request.</p>
+  <div class="expected"><strong>Expected Response</strong><br>The request should successfully create the user and return the created user&#x27;s ID. The returned ID should be stored in the created_user_id environment variable.</div>
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>Authorization</code></td><td><code>Bearer Token: {{auth_token}}</code></td></tr><tr><td><code>x-api-key</code></td><td><code>{{reqres_api}}</code></td></tr></tbody></table></div>
+  <div class="subblock"><div class="label">Body — raw JSON</div><pre><code>{
+    &quot;name&quot;: &quot;Ashok&quot;,
+    &quot;job&quot;: &quot;QA Intern&quot;
+}</code></pre></div>
+</article></div><div id="request-chaining-2" class="folder"><h3>Ecommerce Workflow</h3>
+<article class="request" id="req-23-get-get-user">
+  <div class="request-title"><span class="method get">GET</span> <span>Get user</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{jsonplaceholder_url}}/users/1</code></div>
+  <p>Retrieves user information for user ID 1 and saves the user ID for use in subsequent requests.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Successful response containing user information. The user ID should be saved to the userId environment variable.</div>
+  
+  
+</article>
+<article class="request" id="req-24-get-get-users-post">
+  <div class="request-title"><span class="method get">GET</span> <span>get users post</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{jsonplaceholder_url}}/posts?userId={{json_user_id}}</code></div>
+  <p>Retrieves posts belonging to the user stored in the json_user_id environment variable and saves the first post ID.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Successful response containing the user&#x27;s posts. The first post ID should be saved to the postId environment variable.</div>
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>userId</code></td><td><code>{{json_user_id}}</code></td></tr></tbody></table></div>
+  
+</article>
+<article class="request" id="req-25-get-get-comment">
+  <div class="request-title"><span class="method get">GET</span> <span>get comment</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{jsonplaceholder_url}}/comments?postId={{json_post_id}}</code></div>
+  <p>Retrieves comments associated with the post stored in the json_post_id environment variable.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Successful response containing comments for the specified post.</div>
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>postId</code></td><td><code>{{json_post_id}}</code></td></tr></tbody></table></div>
+  
+</article>
+<article class="request" id="req-26-post-add-comments">
+  <div class="request-title"><span class="method post">POST</span> <span>add comments</span></div>
+  <div class="endpoint"><span>POST</span> <code>{{jsonplaceholder_url}}/comments</code></div>
+  <p>Creates a new comment for the post identified by the postId environment variable.</p>
+  <div class="expected"><strong>Expected Response</strong><br>The comment should be created successfully and the response should contain the created comment data.</div>
+  
+  <div class="subblock"><div class="label">Body — raw JSON</div><pre><code>{
+    &quot;postId&quot;: 1,
+    &quot;name&quot;: &quot;Ashok&quot;,
+    &quot;email&quot;: &quot;ashok@example.com&quot;,
+    &quot;body&quot;: &quot;This is a test comment.&quot;
+}</code></pre></div>
+</article>
+<article class="request" id="req-27-get-verify-comment">
+  <div class="request-title"><span class="method get">GET</span> <span>verify comment</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{jsonplaceholder_url}}/comments?postId={{json_post_id}}</code></div>
+  <p>Retrieves the comments for the same post after adding a new comment to verify the comment count.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Successful response containing the comments for the specified post. The comment count should be increased compared with the previous request.</div>
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>postId</code></td><td><code>{{json_post_id}}</code></td></tr></tbody></table></div>
+  
+</article></div></section><section id="data-driven" class="collection"><h2>4.4 Data driven testing</h2>
+<article class="request" id="req-28-post-create-user-data-driven">
+  <div class="request-title"><span class="method post">POST</span> <span>create user - data driven</span></div>
+  <div class="endpoint"><span>POST</span> <code>{{reqres_url}}/users</code></div>
+  
+  
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>x-api-key</code></td><td><code>{{reqres_api}}</code></td></tr></tbody></table></div>
+  <div class="subblock"><div class="label">Body — raw JSON</div><pre><code>{
+    &quot;name&quot;: &quot;{{name}}&quot;,
+    &quot;job&quot;: &quot;{{job}}&quot;
+}</code></pre></div>
+</article></section><section id="weather" class="collection"><h2>Weather API</h2>
+<article class="request" id="req-29-get-get-weather-by-city">
+  <div class="request-title"><span class="method get">GET</span> <span>get weather by city</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{weather_base_url}}?q=Kathmandu&amp;appid={{appid}}&amp;units=metrics</code></div>
+  <p>Retrieves the current weather information for a specified city using the city name.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 200. The response should contain current weather information, including temperature, humidity, and weather description.</div>
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>q</code></td><td><code>Kathmandu</code></td></tr><tr><td><code>appid</code></td><td><code>{{appid}}</code></td></tr><tr><td><code>units</code></td><td><code>metrics</code></td></tr></tbody></table></div>
+  
+</article>
+<article class="request" id="req-30-get-get-weather-by-lat-long">
+  <div class="request-title"><span class="method get">GET</span> <span>get weather by lat&amp;long</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{weather_base_url}}?lat=27.7004&amp;lon=85.2906&amp;appid={{appid}}&amp;units=metric</code></div>
+  <p>Retrieves the current weather information using the specified latitude and longitude coordinates.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 200. The response should contain current weather information for the specified coordinates, including temperature, humidity, and weather description.</div>
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>lat</code></td><td><code>27.7004</code></td></tr><tr><td><code>lon</code></td><td><code>85.2906</code></td></tr><tr><td><code>appid</code></td><td><code>{{appid}}</code></td></tr><tr><td><code>units</code></td><td><code>metric</code></td></tr></tbody></table></div>
+  
+</article>
+<article class="request" id="req-31-get-test-with-invalid-api-key">
+  <div class="request-title"><span class="method get">GET</span> <span>test with invalid api key</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{weather_base_url}}?q=Kathmandu&amp;appid=abcdefg&amp;units=metrics</code></div>
+  <p>Tests the weather API using an invalid API key to verify authentication error handling.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 401 indicating that the API key is invalid or unauthorized.</div>
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>q</code></td><td><code>Kathmandu</code></td></tr><tr><td><code>appid</code></td><td><code>abcdefg</code></td></tr><tr><td><code>units</code></td><td><code>metrics</code></td></tr></tbody></table></div>
+  
+</article>
+<article class="request" id="req-32-get-invalid-city-name">
+  <div class="request-title"><span class="method get">GET</span> <span>invalid city name</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{weather_base_url}}?q=ashok&amp;appid={{appid}}&amp;units=metrics</code></div>
+  <p>Tests the weather API using an invalid or non-existent city name to verify error handling.</p>
+  <div class="expected"><strong>Expected Response</strong><br>The API should return an appropriate error response indicating that the requested city could not be found.</div>
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>q</code></td><td><code>ashok</code></td></tr><tr><td><code>appid</code></td><td><code>{{appid}}</code></td></tr><tr><td><code>units</code></td><td><code>metrics</code></td></tr></tbody></table></div>
+  
+</article></section><section id="countries" class="collection"><h2>Countries API</h2>
+<article class="request" id="req-33-get-search-country-by-name">
+  <div class="request-title"><span class="method get">GET</span> <span>search country by name</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{country_base_url}}/names.common/nepal</code></div>
+  <p>Retrieves country information by searching for a country using its common name.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 200. The response should contain country information including the country name, capital, population, and currencies.</div>
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>Authorization</code></td><td><code>Bearer Token: &lt;token&gt;</code></td></tr></tbody></table></div>
+  
+</article>
+<article class="request" id="req-34-get-search-by-country-code">
+  <div class="request-title"><span class="method get">GET</span> <span>search by country code</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{country_base_url}}/codes.alpha_2/np</code></div>
+  <p>Retrieves country information using the country&#x27;s alpha-2 country code.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 200. The response should contain information for the requested country, including the country name, capital, population, and currencies.</div>
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>Authorization</code></td><td><code>Bearer Token: &lt;token&gt;</code></td></tr></tbody></table></div>
+  
+</article>
+<article class="request" id="req-35-get-filter-by-region">
+  <div class="request-title"><span class="method get">GET</span> <span>filter by region</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{country_base_url}}/region/Asia</code></div>
+  <p>Retrieves countries belonging to the specified geographical region.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 200. The response should contain a list of countries from the requested region.</div>
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>Authorization</code></td><td><code>Bearer Token: &lt;token&gt;</code></td></tr></tbody></table></div>
+  
+</article>
+<article class="request" id="req-36-get-search-by-partial-name">
+  <div class="request-title"><span class="method get">GET</span> <span>search by partial name</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{country_base_url}}/names.common?q=nep</code></div>
+  <p>Searches for countries using a partial country name.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 200. The response should contain countries matching the provided partial name.</div>
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>Authorization</code></td><td><code>Bearer Token: &lt;token&gt;</code></td></tr><tr><td><code>q</code></td><td><code>nep</code></td></tr></tbody></table></div>
+  
+</article>
+<article class="request" id="req-37-get-invalid-country">
+  <div class="request-title"><span class="method get">GET</span> <span>invalid country</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{country_base_url}}/names.common/invalid_country</code></div>
+  <p>Tests the country API using an invalid or non-existent country name to verify error handling.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 200 with an empty result indicating that no matching country was found.</div>
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>Authorization</code></td><td><code>Bearer Token: &lt;token&gt;</code></td></tr></tbody></table></div>
+  
+</article></section><section id="petstore" class="collection"><h2>Petstore API</h2>
+<article class="request" id="req-38-get-browse-available-pet">
+  <div class="request-title"><span class="method get">GET</span> <span>browse available pet</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{petstore_url}}/pet/findByStatus?status=available</code></div>
+  <p>Retrieves a list of pets that are currently available for adoption/purchase.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 200. The response should contain an array of available pets. Each pet should contain pet information including its ID and status.</div>
+  <div class="subblock"><div class="label">Parameters / Headers</div>
+<table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td><code>status</code></td><td><code>available</code></td></tr></tbody></table></div>
+  
+</article>
+<article class="request" id="req-39-get-get-pet-by-id">
+  <div class="request-title"><span class="method get">GET</span> <span>get pet by id</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{petstore_url}}/pet/{{pet_id}}</code></div>
+  <p>Retrieves the details of a specific pet using the petId obtained from the available pets request.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 200. The response should contain the details of the requested pet, including its ID, name, and status.</div>
+  
+  
+</article>
+<article class="request" id="req-40-post-place-order-for-pet">
+  <div class="request-title"><span class="method post">POST</span> <span>place order for pet</span></div>
+  <div class="endpoint"><span>POST</span> <code>{{petstore_url}}/store/order</code></div>
+  <p>Creates an order for a pet using the pet ID and order details provided in the request body. The returned order ID is saved to the order_id environment variable for use in subsequent requests.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 200. The response should contain the created order details, including the order ID, pet ID, quantity, status, and completion information.</div>
+  
+  <div class="subblock"><div class="label">Body — raw JSON</div><pre><code>{
+    &quot;petId&quot;: {{pet_id}},
+    &quot;quantity&quot;: 1,
+    &quot;shipDate&quot;: &quot;2026-09-22T12:00:00.000Z&quot;,
+    &quot;status&quot;: &quot;placed&quot;,
+    &quot;complete&quot;: true
+}</code></pre></div>
+</article>
+<article class="request" id="req-41-get-check-order-status">
+  <div class="request-title"><span class="method get">GET</span> <span>check order status</span></div>
+  <div class="endpoint"><span>GET</span> <code>{{petstore_url}}/store/order/{{order_id}}</code></div>
+  <p>Retrieves the order details using the order_id saved from the pet order request.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 200. The response should contain the order details associated with the specified order ID, including the order status.</div>
+  
+  
+</article>
+<article class="request" id="req-42-delete-cancel-order">
+  <div class="request-title"><span class="method delete">DELETE</span> <span>cancel order</span></div>
+  <div class="endpoint"><span>DELETE</span> <code>{{petstore_url}}/store/order/{{order_id}}</code></div>
+  <p>Cancels the pet order using the order_id saved from the order creation request.</p>
+  <div class="expected"><strong>Expected Response</strong><br>Status code 200. The API should successfully process the cancellation and return a response confirming the order deletion.</div>
+  
+  
+</article></section>
+  </div>
+  <div class="footer">Generated API Test Documentation • Postman Practice Project</div>
+</main>
+</div>
+<script>
+function filterDocs(){
+  const q=document.getElementById('search').value.toLowerCase().trim();
+  document.querySelectorAll('.request').forEach(r=>{
+    r.classList.toggle('empty', q && !r.innerText.toLowerCase().includes(q));
+  });
+}
+
+function setupCollapsibleNavigation() {
+  document.querySelectorAll('.side-section').forEach((section) => {
+    const main = section.querySelector(':scope > .side-main');
+    if (!main || section.querySelector(':scope > .collapse-toggle')) return;
+
+    const toggle = document.createElement('button');
+    toggle.className = 'collapse-toggle';
+    toggle.type = 'button';
+    toggle.setAttribute('aria-label', 'Collapse topic');
+    toggle.setAttribute('title', 'Collapse topic');
+    toggle.textContent = '⌄';
+
+    toggle.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      section.classList.toggle('collapsed');
+      const collapsed = section.classList.contains('collapsed');
+
+      toggle.setAttribute('aria-label', collapsed ? 'Expand topic' : 'Collapse topic');
+      toggle.setAttribute('title', collapsed ? 'Expand topic' : 'Collapse topic');
+    });
+
+    section.insertBefore(toggle, main);
+  });
+}
+
+setupCollapsibleNavigation();
+
+</script>
+</body>
+</html>

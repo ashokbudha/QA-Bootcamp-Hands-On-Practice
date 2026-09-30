@@ -1,0 +1,374 @@
+{
+  "info": {
+    "_postman_id": "b43c4b2b-85e6-4318-90ca-5eb9ba95e96e",
+    "name": "QA-API-Fundamentals",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55158505",
+    "_collection_link": "https://go.postman.co/collection/55158505-b43c4b2b-85e6-4318-90ca-5eb9ba95e96e?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get users",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response time is less than 2000ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\npm.test(\"Content-Type is JSON\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\"))\r\n        .to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response contains data array\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.data).to.be.an(\"array\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{reqres_url}}/users",
+          "host": [
+            "{{reqres_url}}"
+          ],
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get User by Id 2",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function() {\r\n    pm.response.to.have.status(200);\r\n})\r\n\r\npm.test(\"Response time is below 2000\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n})\r\n\r\npm.test(\"content type is json\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r\n})\r\n\r\npm.test(\"user id id 2\", function () {\r\n    pm.expect(pm.response.json().data.id).to.eql(2)\r\n})"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{reqres_url}}/users/2",
+          "host": [
+            "{{reqres_url}}"
+          ],
+          "path": [
+            "users",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Non-Existent User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Response Status code is 404\", function() {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"response time is below 2000\", function (){\r\n    pm.expect(pm.response.responseTime).to.be.below(2000)\r\n})\r\n\r\npm.test(\"content type is json\", function(){\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\")\r\n})\r\n\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{reqres_url}}/users/999",
+          "host": [
+            "{{reqres_url}}"
+          ],
+          "path": [
+            "users",
+            "999"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "create User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Response Status code is 201\", function() {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.test(\"Response time is less than 2000ms\", function() {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\npm.test(\"Content-Type is JSON\", function() {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\"))\r\n        .to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response contains user ID\", function() {\r\n    const response = pm.response.json();\r\n    pm.expect(response).to.have.property(\"id\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"Ashok\",\r\n    \"job\": \"QA Intern\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{reqres_url}}/users",
+          "host": [
+            "{{reqres_url}}"
+          ],
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "update user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n})\r\n\r\npm.test(\"Response time is less than 2000ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n})\r\n\r\npm.test(\"content type is application/json\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r\n})\r\n\r\npm.test(\"Response body contains 'Senior QA'\", function () {\r\n    pm.expect(pm.response.text()).to.include('Senior QA');\r\n})"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"job\": \"Senior QA\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{reqres_url}}/users/2",
+          "host": [
+            "{{reqres_url}}"
+          ],
+          "path": [
+            "users",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Partial update user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n})\n\npm.test(\"Response time is less than 2000ms\", function () {\n    pm.expect(pm.response.responseTime).to.be.below(2000);\n})\n\npm.test(\"content type is application/json\", function () {\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\n})\n\npm.test(\"Response body contains 'Senior QA'\", function () {\n    pm.expect(pm.response.text()).to.include('Senior QA');\n})"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"job\": \"Senior QA\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{reqres_url}}/users/2",
+          "host": [
+            "{{reqres_url}}"
+          ],
+          "path": [
+            "users",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "delete user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Response Status code is 204\", function() {\r\n    pm.response.to.have.status(204);\r\n});\r\n\r\npm.test(\"Response time is less than 2000ms\", function() {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\npm.test(\"Response body is empty\", function() {\r\n    pm.expect(pm.response.text()).to.equal(\"\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{reqres_url}}/users/2",
+          "host": [
+            "{{reqres_url}}"
+          ],
+          "path": [
+            "users",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get users Page 2",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response time is less than 2000ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\npm.test(\"Content-Type is JSON\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\"))\r\n        .to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response contains data array\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.data).to.be.an(\"array\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{reqres_url}}/users?page=2",
+          "host": [
+            "{{reqres_url}}"
+          ],
+          "path": [
+            "users"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "2"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get User 9",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function() {\r\n    pm.response.to.have.status(200);\r\n})\r\n\r\npm.test(\"Response time is below 2000\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n})\r\n\r\npm.test(\"content type is json\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r\n})\r\n\r\npm.test(\"user id id 9\", function () {\r\n    pm.expect(pm.response.json().data.id).to.eql(9)\r\n})"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{reqres_url}}/users/9",
+          "host": [
+            "{{reqres_url}}"
+          ],
+          "path": [
+            "users",
+            "9"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get user 1",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function() {\r\n    pm.response.to.have.status(200);\r\n})\r\n\r\npm.test(\"Response time is below 2000\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n})\r\n\r\npm.test(\"content type is json\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r\n})\r\n\r\npm.test(\"user id id 1\", function () {\r\n    pm.expect(pm.response.json().data.id).to.eql(1)\r\n})"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{reqres_url}}/users/1",
+          "host": [
+            "{{reqres_url}}"
+          ],
+          "path": [
+            "users",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get users page 3",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function() {\r\n    pm.response.to.have.status(200);\r\n})\r\n\r\npm.test(\"Response time is below 2000\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n})\r\n\r\npm.test(\"content type is json\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\");\r\n})\r\n\r\n\r\npm.test(\"data is empty\",function(){\r\n    pm.expect(pm.response.json().data).to.eql([])\r\n})"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{reqres_url}}/users?page=3",
+          "host": [
+            "{{reqres_url}}"
+          ],
+          "path": [
+            "users"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "3"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

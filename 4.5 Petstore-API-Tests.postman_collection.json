@@ -1,0 +1,173 @@
+{
+  "info": {
+    "_postman_id": "aa06c6eb-1c50-40b6-a30b-a08397ea46d6",
+    "name": "Petstore-API-Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55158505",
+    "_collection_link": "https://go.postman.co/collection/55158505-aa06c6eb-1c50-40b6-a30b-a08397ea46d6?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "browse available pet",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"status is 200\", function(){\r\n    pm.response.to.have.status(200);\r\n})\r\n\r\npm.test(\"Array is not empty\", function () {\r\n    pm.expect(pm.response.json()).to.be.an(\"array\").that.is.not.empty;\r\n});\r\n\r\nvar jsonData = pm.response.json();\r\npm.environment.set(\"pet_id\",jsonData[0].id);\r\n\r\npm.test(\"pet id saved\",function(){\r\n    pm.expect(pm.environment.get(\"pet_id\")).to.eql(jsonData[0].id);\r\n})"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{petstore_url}}/pet/findByStatus?status=available",
+          "host": [
+            "{{petstore_url}}"
+          ],
+          "path": [
+            "pet",
+            "findByStatus"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "available"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get pet by id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"status code is 200\", function(){\r\n    pm.response.to.have.status(200);\r\n})\r\n\r\npm.test(\"pet id is correct\", function(){\r\n    pm.expect(pm.response.json().id).to.eql(pm.environment.get(\"pet_id\"))\r\n})"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{petstore_url}}/pet/{{pet_id}}",
+          "host": [
+            "{{petstore_url}}"
+          ],
+          "path": [
+            "pet",
+            "{{pet_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "place order for pet",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"status is 200\", function(){\r\n    pm.response.to.have.status(200);\r\n})\r\n\r\nconst responseText = pm.response.text();\r\nconst match = responseText.match(/\"id\"\\s*:\\s*(\\d+)/);\r\nconst orderId = match[1];\r\npm.environment.set(\"order_id\", orderId);\r\n\r\n\r\npm.test(\"Order ID is saved\", function () {\r\n    pm.expect(pm.environment.get(\"order_id\")).to.eql(orderId);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"petId\": {{pet_id}},\r\n    \"quantity\": 1,\r\n    \"shipDate\": \"2026-09-22T12:00:00.000Z\",\r\n    \"status\": \"placed\",\r\n    \"complete\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{petstore_url}}/store/order",
+          "host": [
+            "{{petstore_url}}"
+          ],
+          "path": [
+            "store",
+            "order"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "check order status",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"status is 200\", function(){\r\n    pm.response.to.have.status(200);\r\n})\r\n\r\npm.test(\"check order status exists\", function (){\r\n    pm.response.to.have.jsonBody('status');\r\n\r\n})\r\n\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{petstore_url}}/store/order/{{order_id}}",
+          "host": [
+            "{{petstore_url}}"
+          ],
+          "path": [
+            "store",
+            "order",
+            "{{order_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "cancel order",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n})"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{petstore_url}}/store/order/{{order_id}}",
+          "host": [
+            "{{petstore_url}}"
+          ],
+          "path": [
+            "store",
+            "order",
+            "{{order_id}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "info": {
+    "_postman_id": "40e52bee-f0ff-4de7-a16b-b157da406116",
+    "name": "Weather-API-Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55158505",
+    "_collection_link": "https://go.postman.co/collection/55158505-40e52bee-f0ff-4de7-a16b-b157da406116?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "get weather by city",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const data = pm.response.json();\r\n\r\npm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Temperature exists\", function () {\r\n    pm.expect(data.main.temp).to.exist;\r\n});\r\n\r\npm.test(\"Humidity exists\", function () {\r\n    pm.expect(data.main.humidity).to.exist;\r\n});\r\n\r\npm.test(\"Weather description exists\", function () {\r\n    pm.expect(data.weather[0].description).to.exist;\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{weather_base_url}}?q=Kathmandu&appid={{appid}}&units=metrics",
+          "host": [
+            "{{weather_base_url}}"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "Kathmandu"
+            },
+            {
+              "key": "appid",
+              "value": "{{appid}}"
+            },
+            {
+              "key": "units",
+              "value": "metrics"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get weather by lat&long",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const data = pm.response.json();\r\n\r\npm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Temperature exists\", function () {\r\n    pm.expect(data.main.temp).to.exist;\r\n});\r\n\r\npm.test(\"Humidity exists\", function () {\r\n    pm.expect(data.main.humidity).to.exist;\r\n});\r\n\r\npm.test(\"Weather description exists\", function () {\r\n    pm.expect(data.weather[0].description).to.exist;\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{weather_base_url}}?lat=27.7004&lon=85.2906&appid={{appid}}&units=metric",
+          "host": [
+            "{{weather_base_url}}"
+          ],
+          "query": [
+            {
+              "key": "lat",
+              "value": "27.7004"
+            },
+            {
+              "key": "lon",
+              "value": "85.2906"
+            },
+            {
+              "key": "appid",
+              "value": "{{appid}}"
+            },
+            {
+              "key": "units",
+              "value": "metric"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "test with invalid api key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"verify status code is 401\",function(){\r\n    pm.response.to.have.status(401)\r\n})"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{weather_base_url}}?q=Kathmandu&appid=abcdefg&units=metrics",
+          "host": [
+            "{{weather_base_url}}"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "Kathmandu"
+            },
+            {
+              "key": "appid",
+              "value": "abcdefg"
+            },
+            {
+              "key": "units",
+              "value": "metrics"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "invalid city name",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n})"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{weather_base_url}}?q=ashok&appid={{appid}}&units=metrics",
+          "host": [
+            "{{weather_base_url}}"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "ashok"
+            },
+            {
+              "key": "appid",
+              "value": "{{appid}}"
+            },
+            {
+              "key": "units",
+              "value": "metrics"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
